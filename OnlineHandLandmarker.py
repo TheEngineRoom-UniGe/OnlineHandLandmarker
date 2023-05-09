@@ -1,6 +1,4 @@
 import mediapipe as mp
-from mediapipe.tasks import python
-from mediapipe.tasks.python import vision
 import cv2
 import time
 
@@ -45,6 +43,7 @@ class Online_Hand_Landmarker():
 
         with HandLandmarker.create_from_options(options) as landmarker:
             while(True):
+                start = time.time()
                 ret, frame = vid.read()
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
@@ -57,9 +56,10 @@ class Online_Hand_Landmarker():
 
                 self.stamp += 1
 
+                print(f'fps: {1/(time.time() - start)}')
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
 
 if __name__ == '__main__':
-    OHL = Online_Hand_Landmarker('./hand_landmarker.task')
+    OHL = Online_Hand_Landmarker('/home/index1/Desktop/OnlineHandLandmarker/hand_landmarker.task')
     OHL.start()
